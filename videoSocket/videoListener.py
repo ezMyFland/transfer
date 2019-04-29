@@ -46,7 +46,7 @@ class videoListener(threading.Thread):
         while True:
             time.sleep(buff.DEFAULT_THREAD_SLEEP_TIME)
             self.connected = len(self.senderList)
-            message = "test_connection"
+            message = videoStr.DEFAULT_CHECK_CONNECT_STRING_LISTENER
             print(self.senderList)
             for sender in self.senderList:
                 if sender.connectCheckTimeLeft > 0:

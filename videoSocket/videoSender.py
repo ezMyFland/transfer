@@ -23,14 +23,25 @@ class videoSender(Thread):
             if self.FLVSize == 0:
                 continue
             if self.tagPoint == 0:
-                self.client.send((str(self.FLVSize) + " ").encode())
+                self.client.send((videoStr.TAG_SUM_START +str(self.FLVSize) +videoStr.TAG_SUM_END + " ").encode())
                 self.client.send((videoStr.HEAD_START + bytes.decode(self.FLV.head.headInfo) + videoStr.HEAD_END).encode())
             if self.FLVSize <= self.tagPoint:
                 self.client.shutdown(2)
                 self._stop()
-            self.client.send((str(videoStr.TAG_HEAD) + str(self.tagPoint) +
-                              str(videoStr.TAG_START) + str(self.FLV.tags[self.tagPoint].data) + str(videoStr.TAG_END)).encode())
-            self.tagPoint += 1
+            try:
+                if self.tagPoint == 20:
+                    self.client.shutdown(2)
+                    break
+                data = (str(videoStr.TAG_HEAD) + str(self.tagPoint) +
+                                str(videoStr.TAG_START) + str(self.FLV.tags[self.tagPoint].data) + str(videoStr.TAG_END))
+                print(data)
+                self.client.send(data.encode())
+                self.tagPoint += 1
+            except (ConnectionResetError,ConnectionAbortedError) as e:
+                self.client.shutdown(2)
+                self._stop()
+
+
             pass
 
     def sendData(self):
