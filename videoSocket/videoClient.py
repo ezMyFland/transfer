@@ -1,5 +1,5 @@
 from socket import socket
-from staticData import videoStr,buff
+from staticData import videoStr, buff
 import time
 import re
 from FLVHelper.TAGHelper.FLVHead import Head
@@ -8,7 +8,7 @@ from threading import Thread
 
 class client(Thread):
 
-    def __init__(self,addr = ("localhost", 10086),filepath = ""):
+    def __init__(self, addr=("localhost", 10086), filepath=""):
         Thread.__init__(self)
         self.s = socket()
         self.addr = addr
@@ -27,9 +27,9 @@ class client(Thread):
             print("connected")
             time.sleep(5)
             self.s.send((videoStr.CHANGE_VIDEO_NAME + " " +
-                    "C:/Users/89749/Documents/Tencent Files/897494980/FileRecv/36721-2016-10-15-21-17-29.flv "
-                    + videoStr.CHANGE_VIDEO_NAME_EOF
-                    ).encode())
+                         self.filepath +
+                         videoStr.CHANGE_VIDEO_NAME_EOF
+                         ).encode())
             i = 0
             while True:
                 buff = self.s.recv(4096)
@@ -60,6 +60,10 @@ class client(Thread):
                         start_tag_loc = string.find(videoStr.TAG_START)
                         tag_loc = int(string[:start_tag_loc])
                         self.tag[tag_loc] = string[start_tag_loc + len(videoStr.TAG_START):]
-                        print(self.tag.index(""))
+                        print(len(self.tag[tag_loc]))
+                try:
+                    self.tag.index("") == -1
+                except ValueError:
+                    break
 
         pass
